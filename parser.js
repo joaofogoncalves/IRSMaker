@@ -93,12 +93,12 @@ function getSellGains(sell,buy, index) {
                 'Realizaçao': {
                     'Ano': sell.Data.getFullYear(),
                     'Mes': sell.Data.getMonth()+1,
-                    'Valor': (sell.Valor/sell.Quantidade ) * quantityToCal
+                    'Valor': Math.abs( (sell.Valor/sell.Quantidade ) * quantityToCal)
                 },
                 'Aquisição': {
                     'Ano': buy.Data.getFullYear(),
                     'Mes': buy.Data.getMonth()+1,
-                    'Valor':  (buy.Valor/buy.Quantidade ) * quantityToCal * -1
+                    'Valor':  Math.abs( (buy.Valor/buy.Quantidade ) * quantityToCal )
                 },
                 'Despesas e Encargos': sellExpense+buyExpense
             };
@@ -123,7 +123,8 @@ function getSellGains(sell,buy, index) {
 function getParsedLine(header, line)  {
     const parsedline = {};
     header.forEach( (head, index) => {
-        if (head &&  line[index] ) {
+        if (head ) {
+
             if (typeof(line[index]) == 'string') {
                 number = parseFloat( line[index].replace(',', '.'))
 
@@ -176,6 +177,7 @@ function getStocksMovements(data) {
 
             parsedline.RemainQuantidade = parsedline.Quantidade;
 
+            console.log(parsedline)
 
             if (parsedline.Valor > 0 ) {
                 stock.sell.push(parsedline)
