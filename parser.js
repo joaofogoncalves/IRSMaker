@@ -1,4 +1,5 @@
-var xlsx = require('node-xlsx');
+const date = require('date-and-time');
+const xlsx = require('node-xlsx');
 
 const filename = 'JoinedTransactions.xlsx';
 const year = 2020;
@@ -41,6 +42,7 @@ function getIRSLines(stocks) {
 
         stock.sell.forEach( sell => {
                 const sellGains = getSellGains(sell,stock.buy, index)
+
 
                 if ( sell.Data.getFullYear() == year) {
                     if (sellGains.length) {
@@ -121,8 +123,26 @@ function getSellGains(sell,buy, index) {
 function getParsedLine(header, line)  {
     const parsedline = {};
     header.forEach( (head, index) => {
-        if (head) {
-            parsedline[head] = line[index]
+        if (head &&  line[index] ) {
+            if (typeof(line[index]) == 'string') {
+                number = parseFloat( line[index].replace(',', '.'))
+
+
+                if (date.isValid(line[index], 'DD-MM-YYYY') ) {
+                    parsedline[head] = date.parse(line[index], 'DD-MM-YYYY');
+                } else if (number) {
+                    parsedline[head] = number
+                } else {
+                    parsedline[head] = line[index]
+                }
+            } else {
+                parsedline[head] = line[index]
+
+            }
+
+
+
+
         }
     });
 
@@ -146,7 +166,6 @@ function getStocksMovements(data) {
 
     const stocks = [];
     lines.forEach(line => {
-
         if (line.length) {
             const parsedline = getParsedLine(header, line);
             let stock = stocks.find( stock => stock.name == parsedline.Produto)
@@ -163,7 +182,6 @@ function getStocksMovements(data) {
             } else {
                 stock.buy.push(parsedline)
             }
-
 
         }
     })
