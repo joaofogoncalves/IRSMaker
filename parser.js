@@ -40,15 +40,16 @@ function getIRSLines(stocks) {
         const stockGains = {'name': stock.name, 'sellGains': []}
 
         stock.sell.forEach( sell => {
-            if ( sell.Data.getFullYear() == year) {
-
                 const sellGains = getSellGains(sell,stock.buy, index)
-                if (sellGains.length) {
 
-                    stockGains.sellGains = stockGains.sellGains.concat(sellGains)
-                    index = index + sellGains.length;
+                if ( sell.Data.getFullYear() == year) {
+                    if (sellGains.length) {
+
+                        stockGains.sellGains = stockGains.sellGains.concat(sellGains)
+                        index = index + sellGains.length;
+                    }
                 }
-            }
+
         })
         if (stockGains.sellGains.length) {
             IRSLines.push(stockGains)
