@@ -1,8 +1,10 @@
 const date = require('date-and-time');
 const xlsx = require('node-xlsx');
 
-const filename = 'JoinedTransactions.xlsx';
+const filename = 'Test.xlsx';
+//const filename = 'JoinedTransactions.xlsx';
 const year = 2020;
+
 
 
 console.log('##################################')
@@ -65,6 +67,7 @@ function getSellGains(sell,buy, index) {
     const sellGains = [];
 
     buy.forEach( buy => {
+
         if (sell.RemainQuantidade == 0 || buy.RemainQuantidade == 0) {
             // All sold shares are accounted for
             return;
@@ -84,8 +87,9 @@ function getSellGains(sell,buy, index) {
             }
 
 
-            let sellExpense = Math.abs(sell['Custos de transação']);
-            let buyExpense = Math.abs(buy['Custos de transação']);
+            let sellExpense = sell['Custos de transação'] ? Math.abs(sell['Custos de transação']) : 0;
+            let buyExpense = buy['Custos de transação'] ?  Math.abs(buy['Custos de transação']) : 0;
+
 
 
             const sellGain = {
@@ -175,9 +179,8 @@ function getStocksMovements(data) {
                 stocks.push(stock);
             }
 
-            parsedline.RemainQuantidade = parsedline.Quantidade;
+            parsedline.RemainQuantidade = Math.abs(parsedline.Quantidade);
 
-            console.log(parsedline)
 
             if (parsedline.Valor > 0 ) {
                 stock.sell.push(parsedline)
